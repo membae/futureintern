@@ -74,10 +74,12 @@ class Login(Resource):
         return make_response({"msg":"Invalid data"})
 api.add_resource(Login,'/login')
 
+
 class Users(Resource):
+    @jwt_required()
     def get(self):
-        users=User.query.all()
-        return make_response([user.to_dict() for user in users])
+        user=User.query.all()
+        return make_response([mtu.to_dict() for mtu in user])
 api.add_resource(Users,'/users')
 
 if __name__=="__main__":
