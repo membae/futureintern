@@ -14,7 +14,7 @@ DATABASE= os.environ.get(
 )
 
 app= Flask(__name__)
-CORS(app)
+CORS(app,supports_credentials=True)
 app.config['SQLALCHEMY_DATABASE_URI']=DATABASE
 app.config['SQLALCHEMY_TRACK_MODOFICATIONS']=False
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=30)
@@ -30,6 +30,46 @@ class Home(Resource):
     def get(self):
         return make_response({'msg':"homepage here"},200)
 api.add_resource(Home,'/')
+
+
+
+class Signup(Resource):
+    def post(self):
+        data=request.get_json()
+        email=data.get("email")
+        first_name=data.get("first_name")
+        last_name=data.get("last_name")
+        
+        password=generate_password_hash(data.get("password"))
+        role=data.get("role")
+        if "@" in email and first_name and first_name!=" " and last_name and last_name!=" " and role and role!=" " and data.get("password") and data.get("password")!=" ":
+            user=User.query.filter_by(email=email).first()
+            if user:
+                return make_response({"msg":f"{email} is already registered"},400)
+            new_user=User(first_name=first_name,last_name=last_name,email=email,password=password,role=role)
+            db.session.add(new_user)
+            db.session.commit()
+            return make_response(new_user.to_dict(),201)
+        return make_response({"msg":"Invalid data entries"},400)
+api.add_resource(Signup,'/signup')
+
+class Login(Resource):
+    def post(self):
+        data=request.get_json()
+        email=data.get("email")
+        password=data.get("password")
+        if "@" in email and password:
+            user=User.query.filter_by(email=email).first()
+            if user:
+                if check_password_hash(user.password,password):
+                    access_token=create_access_token(identity=user.id)
+                    refresh_token=create_refresh_token(identity=user.id)
+                    return make_response({"user":user.to_dict(),"access_token":access_token,"refresh_token":refresh_token},200)
+                return make_response({"msg":"Incorrect password"},400)
+            return make_response({"msg":"email not registered"},404)
+        return make_response({"msg":"Invalid data"})
+api.add_resource(Login,'/login')
+
 
 
 class Get_users(Resource):
