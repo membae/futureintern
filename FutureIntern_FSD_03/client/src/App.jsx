@@ -29,6 +29,7 @@ import Users from './components/admin/Users'
 
 import ForgotPassword from './components/ForgotPassword'
 import { AppContext } from './AppContextProvider'
+import Support from './components/client/Support'
 
 
 
@@ -58,6 +59,7 @@ const App = () => {
       <Route path='/client' element={<Client />}>
         <Route path='dashboard' element={<DashboardClient />}/>
         <Route path='product-listings' element={<ProductListing />}/>
+        <Route path='support' element={<Support />}/>
         <Route path='product/:id' element={<ProductCard />}/>
         <Route path='checkout' element={<Checkout />}/>
         <Route path='my-orders' element={<MyOrders />}/>

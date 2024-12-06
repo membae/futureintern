@@ -28,7 +28,7 @@ const Navbar = () => {
             <Link to="/" className="hover:text-gray-400">Daily Deals</Link>
             <Link to="/client/product-listings" className="hover:text-gray-400">Products</Link>
             <Link to="/" className="hover:text-gray-400">Hot & New</Link>
-            <Link to="/" className="hover:text-gray-400">Support</Link>
+            <Link to="/client/support" className="hover:text-gray-400">Support</Link>
           </div>}
 
           {!value.userData.email &&
